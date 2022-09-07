@@ -1,8 +1,6 @@
 # DRL_Stock_Trader
 This is my BSc. Final Project which is about using Deep Reinforcement Learning for stock trading.
 
-
-# How to work with DRL_Stock_Trader Project
 By Kasra Mojallal
 
 
