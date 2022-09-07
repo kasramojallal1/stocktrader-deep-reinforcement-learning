@@ -2,20 +2,18 @@
 This is my BSc. Final Project which is about using Deep Reinforcement Learning for stock trading.
 
 
-How to work with DRL_Stock_Trader Project
-
+# How to work with DRL_Stock_Trader Project
 By Kasra Mojallal
 
 
-About the Project
+## About the Project
 
 This Project is about using Deep Reinforcement Learning for stock trading. The main dataset of the project is dow-jones data from 2009 to 2020.
 
 Since we are using RL, gym library from OpenAI was used for creating the environments for stock trading. Also, the stable baselines 3 was used for creating the algorithms.
 
 
-Creating the virtual environment
-
+## Creating the virtual environment
 It is highly recommended to create a virtual environment for your project. To do so, you can create it using the requirements.txt file:
 
 $ pip install requirements.txt
@@ -23,7 +21,7 @@ $ pip install requirements.txt
 Also, please use pip instead of conda for creating the environment.
 
 
-Using the web-app
+## Using the web-app
 This is a Django Project, to run it you have to do:
 
 $ python manage.py runserver
@@ -39,7 +37,7 @@ The algorithm robustness shows how many steps would the algorithm take to finish
 The logs of the systems will be printed out on the right hand and the online results are on the bottom.
 
 
-Using the stock-trader code
+## Using the stock-trader code
 It is also possible to skip using the web-app code and run the code from the terminal. For doing that, you have to open the terminal in "./stock_trader_website/trader/drl_stock_trader" and then run this code:
 
 $ python main.py
@@ -47,7 +45,7 @@ $ python main.py
 The code will not log the results in the terminal but if you add print, next to the SocketIO messages, you will get the results that you want.
 
 
-Explaining the code
+## Explaining the code
 
 ./
 
