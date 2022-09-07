@@ -1,0 +1,42 @@
+{% extends "trader/base.html" %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-6 mx-auto text-center mt-5 pt-5">
+            <h1 class="display-4">
+                Login
+            </h1>
+
+            {% if messages %}
+            {% for message in messages %}
+            {% if message.tags == 'success' %}
+            <div class="alert alert-success" > {{ message }}</div>
+            {% elif message.tags == 'warning' %}
+            <div class="alert alert-warning"> {{ message }}</div>
+            {% else %}
+            <div class="alert alert-danger"> {{ message }}</div>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group col">
+                        <input type="email" class="form-control" placeholder="Email" name="email">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col">
+                        <input type="password" class="form-control" placeholder="Password" name="password">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary ">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

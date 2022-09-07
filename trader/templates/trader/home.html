@@ -1,0 +1,40 @@
+{% extends 'trader/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="row ">
+
+
+        <div class="col-md-6 text-center">
+            <div class="card mx-auto" style="width: 18rem;">
+                <img class="card-img-top" src="{% static '/trader/images/dow_logo.jpg' %}" alt="Card image cap"
+                     width="400" height="200">
+                <div class="card-body">
+                    <h5 class="card-title">Dow Jones</h5>
+                    <a href="{% url 'dow-home' %}" class="btn btn-primary">Go</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 text-center">
+            <div class="card mx-auto" style="width: 18rem;">
+                <img class="card-img-top" src="{% static '/trader/images/tehran_logo.jpg' %}" alt="Card image cap"
+                     width="400" height="200">
+                <div class="card-body">
+                    <h5 class="card-title">Tehran Stocks</h5>
+                    <a href="{% url 'tehran-home' %}" class="btn btn-primary">Go</a>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+
+
+{% endblock content %}

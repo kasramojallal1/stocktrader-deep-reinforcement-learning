@@ -1,0 +1,181 @@
+{% extends 'trader/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-6">
+            <form id="form">
+
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Initial Amount (ریال)</label>
+                    <div class="col-sm-10">
+                        <input class="form-control-lg" type="number" id="initial_amount" name="initial_amount"
+                               value="1000000" data-decimals="0" min="0"
+                               max="2000000"
+                               step="10000"/>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Start date for train:</label>
+                    <div class="col-sm-10">
+                        <input id="date_train" name="date_train" type="date">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Period for trade:</label>
+                    <div class="col-sm-10">
+                        <input id="date_trade_1" name="date_trade_1" type="date">
+                        <input id="date_trade_2" name="date_trade_2" type="date">
+                    </div>
+                </div>
+
+
+                <fieldset class="form-group">
+                    <div class="row">
+                        <legend class="col-form-label col-sm-2 pt-0">Algorithm Robustness:</legend>
+                        <div class="col-sm-10">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="robustness_option" id="grid_radio_1"
+                                       value="robustness_1" checked>
+                                <label class="form-check-label" for="grid_radio_1">
+                                    Weak - (Fast learning time)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="robustness_option" id="grid_radio_2"
+                                       value="robustness_2">
+                                <label class="form-check-label" for="grid_radio_2">
+                                    Normal - (Medium learning time)
+                                </label>
+                            </div>
+                            <div class="form-check disabled">
+                                <input class="form-check-input" type="radio" name="robustness_option" id="grid_radio_3"
+                                       value="robustness_3">
+                                <label class="form-check-label" for="grid_radio_3">
+                                    Strong - (Slow learning time)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-primary">Start</button>
+                    </div>
+                </div>
+
+
+            </form>
+
+        </div>
+        <div class="col-md-6">
+            <div id="the_result" style="height: 25rem; overflow:auto"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="col-12">
+                <canvas id="progressChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+{% endblock content%}
+
+{% block script %}
+
+<script src="{% static 'trader/js/Chart.min.js' %}"></script>
+
+<script>
+    function addData(chart, label, data) {
+        chart.data.labels.push(label);
+        chart.data.datasets.forEach((dataset) => {
+            dataset.data.push(data);
+        });
+        chart.update();
+    }
+
+    var ctx = $('#progressChart');
+    const data = {
+        datasets: [{
+            label: 'Trading with ensemble',
+            fill: false,
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+        }]
+    };
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: {
+            scales: {
+                y: {
+                    stacked: true
+                }
+            }
+        }
+    });
+
+</script>
+
+
+<script type="text/javascript">
+    let url = `ws://${window.location.host}/ws/execute-model/`
+
+    const trade_socket = new WebSocket(url)
+
+    trade_socket.onmessage = function (e) {
+        let data = JSON.parse(e.data)
+        let terminalResult = document.getElementById('the_result')
+        if (data["type"] === "terminal") {
+            terminalResult.innerText += data['message'] + '\n'
+        } else if (data["type"] === "chart") {
+            addData(chart, "", data['message'])
+        }
+
+    }
+
+    let form = document.getElementById('form')
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault()
+        let initial_amount = e.target.initial_amount.value
+        let date_train = e.target.date_train.value
+        let date_trade_1 = e.target.date_trade_1.value
+        let date_trade_2 = e.target.date_trade_2.value
+        let robustness_option = e.target.robustness_option.value
+        trade_socket.send(JSON.stringify({
+            'market': 'tehran',
+            'initial_amount': initial_amount,
+            'robustness': robustness_option,
+            'date_train': date_train,
+            'date_trade_1': date_trade_1,
+            'date_trade_2': date_trade_2,
+
+        }))
+    })
+
+</script>
+
+<script>
+    window.setInterval(function() {
+        var elem = document.getElementById('the_result');
+        elem.scrollTop = elem.scrollHeight;
+    }, 100);
+
+</script>
+
+
+{% endblock script%}
