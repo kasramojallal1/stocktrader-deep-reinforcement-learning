@@ -1,68 +1,154 @@
-# DRL_Stock_Trader
+# DRL Stock Trader 📈🤖
 
-## About the Project
+Train and evaluate **Deep Reinforcement Learning (DRL)** agents for stock trading and interact with them through a lightweight **Django** web UI. Built on **OpenAI Gym**–style environments and **Stable-Baselines3**, with datasets covering **Dow Jones (2009–2020)** and **Tehran Stock Exchange**.
 
-This Project is about using Deep Reinforcement Learning for stock trading. The main dataset of the project is dow-jones data from 2009 to 2020.
+---
 
-Since we are using RL, gym library from OpenAI was used for creating the environments for stock trading. Also, the stable baselines 3 was used for creating the algorithms.
+##  Repository Description
 
+End-to-end stock trading with Deep Reinforcement Learning (Gym + Stable-Baselines3) and a Django web UI for experiment control and live results.
 
-## Creating the virtual environment
-It is highly recommended to create a virtual environment for your project. To do so, you can create it using the requirements.txt file:
+---
 
-$ pip install requirements.txt
+##  🔬 Deep Reinforcement Learning Setup
 
-Also, please use pip instead of conda for creating the environment.
+At the heart of this repo is a **trading simulation environment** where DRL agents learn policies that maximize trading performance.  
 
+### Environment Design
+- **State (observation):**  
+  Each step provides the agent with features such as current cash, portfolio value, owned shares, and historical technical indicators (moving averages, price changes, etc.).  
+- **Action space:**  
+  - *Buy* – purchase available shares within cash constraints  
+  - *Sell* – liquidate owned shares  
+  - *Hold* – maintain current position  
+- **Reward function:**  
+  Defined as change in portfolio value at each step, encouraging agents to maximize long-term return.  
+- **Episodes:**  
+  Simulated over a sliding window of historical stock data (train → validation → test splits).  
 
-## Using the web-app
-This is a Django Project, to run it you have to do:
+### Algorithms
+We leverage **Stable-Baselines3** implementations of state-of-the-art DRL algorithms:
+- **PPO (Proximal Policy Optimization)** – robust policy gradient algorithm suited for noisy markets.  
+- **A2C (Advantage Actor-Critic)** – lightweight synchronous actor-critic baseline.  
+- **DDPG / TD3** – deterministic policy gradients for continuous actions.  
+- **SAC (Soft Actor-Critic)** – entropy-regularized exploration for better robustness.  
 
-$ python manage.py runserver
+Each algorithm can be plugged into the same environment, allowing comparative experiments.
 
-From there, you can register your name and choose from Dow or Tehran stock markets. When you open the page for one of the traders, you can select the hyper-parameters for starting the project.
+### Why DRL for Trading?
+Stock trading is sequential decision-making under uncertainty. DRL fits this well because:
+- It learns from **trial and error** interactions with a simulated market.  
+- Balances **short-term rewards** (instant gains) with **long-term strategy** (overall portfolio growth).  
+- Adapts to **non-stationary environments**, crucial for real-world markets.  
 
-The initial amount selects the amount of money that the algorithm has before the trading process begins
-The train start date selects the starting date for training process
-The start and end dates for trading select the dates that the real trading are happening in between
-The algorithm robustness shows how many steps would the algorithm take to finish each epoch of the training process
+---
 
+##  Features
 
-The logs of the systems will be printed out on the right hand and the online results are on the bottom.
+- **Web UI for easy control**  
+  Launch and monitor DRL experiments from a web interface. Select the market (Dow or Tehran), training/trading date ranges, hyperparameters, and watch real-time logs and results.
+  
+- **Gym-style environments**  
+  Consistent, OpenAI Gym–compatible train, validation, and test environments for both Dow Jones and Tehran markets.  
 
+- **Plug-and-play DRL algorithms**  
+  PPO, A2C, SAC, TD3, DDPG, and more available from Stable-Baselines3.  
 
-## Using the stock-trader code
-It is also possible to skip using the web-app code and run the code from the terminal. For doing that, you have to open the terminal in "./stock_trader_website/trader/drl_stock_trader" and then run this code:
+- **Reproducible and trackable**  
+  All runs generate saved models under `trained_models/`, logs and results under `results/`.
 
-$ python main.py
+---
 
-The code will not log the results in the terminal but if you add print, next to the SocketIO messages, you will get the results that you want.
+##  Tech Stack
 
+- **Python**: core logic, environments, training  
+- **Django**: web UI and run orchestration  
+- **Stable-Baselines3**: DRL algorithms  
+- **Gym-style envs**: consistent RL API
 
-## Explaining the code
+---
 
-./
+##  Quickstart
 
-The structure of the code is a Django project so it has apps in it.
-The base app is stock_trader_website
-The trader app is where the drl_stock_trader code is
+### Prerequisites
+- Python 3.x environment  
+- Use `pip` to install dependencies (preferred over Conda)
 
+### Installation
+```bash
+git clone https://github.com/kasramojallal1/stocktrader-deep-reinforcement-learning.git
+cd stocktrader-deep-reinforcement-learning
+pip install -r requirements.txt
+```
 
-./trader/drl_stock_trader
+### Launching the Web UI
+```bash
+python manage.py runserver
+```
+- Visit `http://127.0.0.1:8000/`
+- Register an account
+- Choose market (Dow or Tehran), specify training/trading date windows and hyperparameters (e.g. initial cash, epoch steps)
+- View live logs and rolling results in the UI
 
-Folders -->
+### Command-Line (CLI) Mode
+```bash
+python stock_trader_website/trader/drl_stock_trader/main.py
+```
+- Run experiments without the UI
+- CLI outputs logs—add `print(...)` alongside existing SocketIO messages if needed
 
-The dataset folder has the datasets for dow-jones and tehran stocks, both the raw data and pre-processed ones
-The results and results_tehran data will contain the results and logs of the code after you run it
-The RL_envs and RL_envs_tehran folders contain the environments for training, validation and testing, both for dow-jones and tehran data.
-The trained_models and trained_models_tehran will contain the saved algorithms after they were trained on trained data.
+---
 
+##  Project Structure
 
-Files -->
+```
+stock_trader_website/
+├── trader/
+│   └── drl_stock_trader/
+│       ├── dataset/            # Raw + preprocessed data (Dow, Tehran)
+│       ├── RL_envs/            # Train/val/test Gym-style environments
+│       ├── trained_models/     # Saved model checkpoints
+│       ├── results/            # Logs and result outputs
+│       ├── main.py             # Orchestration entry point
+│       ├── data_retriever.py   # Fetch raw market data
+│       ├── preprocess.py       # Data preprocessing pipeline
+│       ├── models.py           # Environment and model builders; training loops
+│       └── algorithms.py       # DRL algorithms and trading routines
+└── ... (Django app code, settings, templates)
+```
 
-main.py will choose the main dataset of the system (dow-jones or tehran stocks), pre-processes the datasets if they haven't been pre-processed and will create the dates for train and trading periods.
-data_retriever.py will get the raw data.
-preprocess.py will pre-process the data.
-models.py will create the environments, the algorithms and make the algorithms train on the environments.
-algorithms.py contains the RL algorithms and the process of trading
+---
 
+##  How It Works
+
+1. **Fetch & preprocess data**  
+   Pull raw data for Dow Jones (2009–2020) or Tehran Stock Exchange, transform it into structured inputs.
+
+2. **Create environments**  
+   Initialize Gym-style environments for training, validation, and testing according to specified windows.
+
+3. **Train agents**  
+   Use Stable‑Baselines3 algorithms (e.g., PPO, A2C) to train on the train window. Control via epoch/step parameters for robustness.
+
+4. **Evaluate and save**  
+   Trade in the test window with the trained policy. Persist model checkpoints to `trained_models/` and logs/results to `results/`.
+
+5. **Visualize via UI**  
+   View live performance metrics and results in the Django interface, or analyze outputs directly from saved files.
+
+---
+
+##  Datasets
+
+- **Dow Jones Index (2009–2020)**  
+- **Tehran Stock Exchange**  
+
+Dataset directories include raw and processed data. Results from each experiment are saved under `results/`, and models in `trained_models/`.
+
+---
+
+##  Tips & Notes
+
+- Use `pip install -r requirements.txt` to match the project’s environment expectations.  
+- For GUI control and monitoring, use the Django web interface.  
+- For automated or scriptable experiments, the CLI (`main.py`) is lean and effective.
